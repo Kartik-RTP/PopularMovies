@@ -13,12 +13,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        GridFragment gridFragment = new GridFragment();
-        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.placeholder,gridFragment,"MOVIE_GRID");
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
 
 
     }
