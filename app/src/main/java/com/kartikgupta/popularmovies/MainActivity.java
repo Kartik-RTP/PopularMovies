@@ -1,18 +1,15 @@
 package com.kartikgupta.popularmovies;
 
-import android.app.FragmentManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.io.IOException;
 
 import okhttp3.Call;
@@ -29,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
     private static final String API_KEY = BuildConfig.TMDB_KEY;
+    private static final String TAG = MainActivity.class.getSimpleName();
     private String mSortOrder = "popular";
     private JSONObject mMovieListJsonObject;
     private RecyclerView mMovieGridRecyclerView;
@@ -39,18 +37,31 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getMovieData();
-        if(mMovieListJsonObject==null){
+        if(mMovieListJsonObject ==null){
             //TODO:add error message
+        }else {
+            mMovieGridRecyclerView = (RecyclerView) findViewById(R.id.movieGridRecyclerView);
+            mMovieGridRecyclerView.setHasFixedSize(true);//TODO:check its effects
+
+            mLayoutManager = new GridLayoutManager(this, 2);
+
+            mMovieGridRecyclerView.setLayoutManager(mLayoutManager);
+            mMovieGridRecyclerView.setAdapter(new MoviesRecyclerViewAdapter(
+                                                                            getMovieListJsonArray()
+                                                                            , this)
+                                                                                        );
         }
-        mMovieGridRecyclerView = (RecyclerView) findViewById(R.id.movieGridRecyclerView);
-        mMovieGridRecyclerView.setHasFixedSize(true);//TODO:check its effects
 
-        mLayoutManager = new GridLayoutManager(this,2);
+    }
 
-        mMovieGridRecyclerView.setLayoutManager(mLayoutManager);
-
-
-
+    private JSONArray getMovieListJsonArray() {
+        JSONArray jsonArray = null;
+        try {
+            jsonArray = mMovieListJsonObject.getJSONArray("results");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonArray;
     }
 
     private void getMovieData() {
@@ -60,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("api_key", API_KEY)
                 .addFormDataPart("language", "en-US")
-                .addFormDataPart("page", "1")
+             //   .addFormDataPart("page", "1")
                 .build();
 
 
@@ -86,12 +97,13 @@ public class MainActivity extends AppCompatActivity {
                 }
                 JSONObject jsonObject=null;
                 try {
-                jsonObject = new JSONObject(String.valueOf(response.body()));
+                jsonObject = new JSONObject(response.body().string());
+                    Log.i(TAG,"Response converted to JsonObject without exception");    
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 mMovieListJsonObject = jsonObject;
-                //System.out.println(response.body().string());
+                System.out.println(response.body().string());
 
             }
         });

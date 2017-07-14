@@ -6,9 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import org.json.JSONObject;
+import org.json.JSONArray;
 
 /**
  * Created by kartik on 12/7/17.
@@ -17,11 +16,11 @@ import org.json.JSONObject;
 public class MoviesRecyclerViewAdapter extends RecyclerView.Adapter<MoviesRecyclerViewAdapter.ViewHolder>{
 
 
-    private JSONObject mMovieDetailsJsonObject;
+    private JSONArray mMovieDetailsJsonArray;
     private LayoutInflater mLayoutInflater;
 
-    public MoviesRecyclerViewAdapter(JSONObject movieDetailsJsonObject , Context context){
-        mMovieDetailsJsonObject = movieDetailsJsonObject;
+    public MoviesRecyclerViewAdapter(JSONArray movieDetailsJsonArray , Context context){
+        mMovieDetailsJsonArray = movieDetailsJsonArray;
         mLayoutInflater = LayoutInflater.from(context);
     }
 
@@ -37,13 +36,13 @@ public class MoviesRecyclerViewAdapter extends RecyclerView.Adapter<MoviesRecycl
     public void onBindViewHolder(ViewHolder holder, int position) {
         //TODO:load image using picasso
 
-        
+
     }
 
 
     @Override
     public int getItemCount() {
-        return mMovieDetailsJsonObject.length();//TODO : check if correct
+        return mMovieDetailsJsonArray.length();//TODO : check if correct
     }
 
     // stores and recycles views as they are scrolled off screen
