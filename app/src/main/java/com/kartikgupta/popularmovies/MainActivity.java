@@ -29,16 +29,35 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private String mSortOrder = "popular";
     private JSONObject mMovieListJsonObject;
+    private JSONArray mMovieListResultsJsonArray;
     private RecyclerView mMovieGridRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
+    private MoviesRecyclerViewAdapter mMoviesRecyclerViewAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getMovieData();
-        if(mMovieListJsonObject ==null){
+        mMovieGridRecyclerView = (RecyclerView) findViewById(R.id.movieGridRecyclerView);
+        mMovieGridRecyclerView.setHasFixedSize(true);//TODO:check its effects
+
+        mLayoutManager = new GridLayoutManager(this, 2);
+
+        mMovieGridRecyclerView.setLayoutManager(mLayoutManager);
+        mMoviesRecyclerViewAdapter = new MoviesRecyclerViewAdapter( mMovieListResultsJsonArray
+                //getMovieListJsonArray()
+                , this);
+        mMovieGridRecyclerView.setAdapter(mMoviesRecyclerViewAdapter);
+        //setupMoviesGridRecyclerView();
+
+    }
+
+    private void setupMoviesGridRecyclerView() {
+        if(mMovieListResultsJsonArray ==null) {
             //TODO:add error message
+            Log.e(TAG,"movie data json object is null");
         }else {
             mMovieGridRecyclerView = (RecyclerView) findViewById(R.id.movieGridRecyclerView);
             mMovieGridRecyclerView.setHasFixedSize(true);//TODO:check its effects
@@ -46,18 +65,18 @@ public class MainActivity extends AppCompatActivity {
             mLayoutManager = new GridLayoutManager(this, 2);
 
             mMovieGridRecyclerView.setLayoutManager(mLayoutManager);
-            mMovieGridRecyclerView.setAdapter(new MoviesRecyclerViewAdapter(
-                                                                            getMovieListJsonArray()
-                                                                            , this)
-                                                                                        );
+            mMoviesRecyclerViewAdapter = new MoviesRecyclerViewAdapter( mMovieListResultsJsonArray
+                                                        //getMovieListJsonArray()
+                                                                                , this);
+            mMovieGridRecyclerView.setAdapter(mMoviesRecyclerViewAdapter);
         }
-
     }
 
     private JSONArray getMovieListJsonArray() {
         JSONArray jsonArray = null;
         try {
             jsonArray = mMovieListJsonObject.getJSONArray("results");
+            System.out.print(jsonArray.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -71,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("api_key", API_KEY)
                 .addFormDataPart("language", "en-US")
-             //   .addFormDataPart("page", "1")
+                .addFormDataPart("page", "1")
                 .build();
 
 
@@ -81,30 +100,63 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
 
+
+
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+
                 e.printStackTrace();
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                String responseString=response.body().string();
                 if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
 
                 Headers responseHeaders = response.headers();
                 for (int i = 0, size = responseHeaders.size(); i < size; i++) {
                     System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
                 }
+                Log.v(TAG,"response obtained is :-\n"+responseString);
                 JSONObject jsonObject=null;
                 try {
-                jsonObject = new JSONObject(response.body().string());
-                    Log.i(TAG,"Response converted to JsonObject without exception");    
+                jsonObject = new JSONObject(responseString);
+                    Log.i(TAG,"Response converted to JsonObject without exception");
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 mMovieListJsonObject = jsonObject;
-                System.out.println(response.body().string());
+                updateData();
 
+
+
+                /*runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setupMoviesGridRecyclerView();
+
+                    }
+                });
+*/
+
+            }
+        });
+
+    }
+
+    private void updateData()  {
+        try {
+            mMovieListResultsJsonArray = mMovieListJsonObject.getJSONArray("results");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mMoviesRecyclerViewAdapter.notifyDataSetChanged();
             }
         });
 
