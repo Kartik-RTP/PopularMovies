@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("api_key", API_KEY)
                 .addFormDataPart("language", "en-US")
-                .addFormDataPart("page", "1")
+              //  .addFormDataPart("page", "1")
                 .build();
 
 
@@ -156,7 +156,8 @@ public class MainActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mMoviesRecyclerViewAdapter.notifyDataSetChanged();
+                Log.v(TAG,"updated movies data should reflect now");
+                mMoviesRecyclerViewAdapter.setMoviesData(mMovieListResultsJsonArray);
             }
         });
 

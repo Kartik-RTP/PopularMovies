@@ -20,7 +20,7 @@ import org.json.JSONException;
 public class MoviesRecyclerViewAdapter extends RecyclerView.Adapter<MoviesRecyclerViewAdapter.ViewHolder>{
 
 
-    private static final String BASE_URL = "http://image.tmdb.org/t/p/w185/";
+    private static final String BASE_URL = "https://image.tmdb.org/t/p/w185/";
     private static final String POSTER_PATH = "poster_path";
     private static final String TAG = MoviesRecyclerViewAdapter.class.getSimpleName();
     private JSONArray mMovieDetailsJsonArray;
@@ -52,13 +52,13 @@ public class MoviesRecyclerViewAdapter extends RecyclerView.Adapter<MoviesRecycl
 
            String relativePath = null;
             try {
-                relativePath = mMovieDetailsJsonArray.getJSONObject(position).getString("poster_path").substring(2);
+                relativePath = mMovieDetailsJsonArray.getJSONObject(position).getString("poster_path").substring(1);
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            Log.v(TAG,"image to be loaded from :-\n"+BASE_URL+relativePath);
+            Log.v(TAG,position+" index image to be loaded from :-\n"+BASE_URL+relativePath);
 
             Picasso.with(mContext)
                     .load(BASE_URL+relativePath)
@@ -83,6 +83,12 @@ public class MoviesRecyclerViewAdapter extends RecyclerView.Adapter<MoviesRecycl
        }
        return 0; //for initially empty jsonArray handling
 
+    }
+
+    public void setMoviesData(JSONArray movieListResultsJsonArray) {
+
+        mMovieDetailsJsonArray=movieListResultsJsonArray;
+        notifyDataSetChanged();
     }
 
     // stores and recycles views as they are scrolled off screen
