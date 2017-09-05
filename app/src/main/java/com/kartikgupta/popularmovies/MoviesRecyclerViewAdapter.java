@@ -26,6 +26,7 @@ public class MoviesRecyclerViewAdapter extends RecyclerView.Adapter<MoviesRecycl
     private JSONArray mMovieDetailsJsonArray;
     private LayoutInflater mLayoutInflater;
     private Context mContext;
+    private ItemClickListener mClickListener;
 
 
     public MoviesRecyclerViewAdapter(JSONArray movieDetailsJsonArray , Context context){
@@ -92,16 +93,36 @@ public class MoviesRecyclerViewAdapter extends RecyclerView.Adapter<MoviesRecycl
     }
 
     // stores and recycles views as they are scrolled off screen
-    public class ViewHolder extends RecyclerView.ViewHolder  {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public ImageView moviePosterImageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
 
             moviePosterImageView = (ImageView) itemView.findViewById(R.id.moviePosterImageView);
         }
 
+
+        @Override
+        public void onClick(View view) {
+            Log.i(TAG,"click event detected on viewholder");
+            if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
+
+        }
+
+    }
+
+
+    // allows clicks events to be caught
+    public void setClickListener(ItemClickListener itemClickListener) {
+        this.mClickListener = itemClickListener;
+    }
+
+    // parent activity will implement this method to respond to click events
+    public interface ItemClickListener {
+        void onItemClick(View view, int position);
     }
 
 

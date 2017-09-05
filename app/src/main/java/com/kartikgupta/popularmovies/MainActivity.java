@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,7 +22,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MoviesRecyclerViewAdapter.ItemClickListener {
 
 
     private static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getMovieData();
         mMovieGridRecyclerView = (RecyclerView) findViewById(R.id.movieGridRecyclerView);
-        mMovieGridRecyclerView.setHasFixedSize(true);//TODO:check its effects
+       // mMovieGridRecyclerView.setHasFixedSize(true);//TODO:check its effects
 
         mLayoutManager = new GridLayoutManager(this, 2);
 
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         mMoviesRecyclerViewAdapter = new MoviesRecyclerViewAdapter( mMovieListResultsJsonArray
                 //getMovieListJsonArray()
                 , this);
+        mMoviesRecyclerViewAdapter.setClickListener(this);
         mMovieGridRecyclerView.setAdapter(mMoviesRecyclerViewAdapter);
         //setupMoviesGridRecyclerView();
 
@@ -161,5 +163,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Log.v(TAG, "You clicked number " + position + ", which is at cell position " + position);
     }
 }
