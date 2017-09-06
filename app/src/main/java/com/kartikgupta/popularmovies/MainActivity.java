@@ -1,5 +1,6 @@
 package com.kartikgupta.popularmovies;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -168,5 +169,17 @@ public class MainActivity extends AppCompatActivity implements MoviesRecyclerVie
     @Override
     public void onItemClick(View view, int position) {
         Log.v(TAG, "You clicked number " + position + ", which is at cell position " + position);
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = mMovieListResultsJsonArray.getJSONObject(position);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if(jsonObject!=null){
+            Intent intent = new Intent(this,MovieDetailsActivity.class);
+            intent.putExtra("movieJSONObject",jsonObject.toString());
+            startActivity(intent);
+        }
+
     }
 }
