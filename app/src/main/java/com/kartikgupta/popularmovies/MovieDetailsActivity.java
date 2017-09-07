@@ -66,7 +66,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
             }
 
 
-          
+
         }else{
             Log.d(TAG,"movieDetailsJSONOBject created is null");
         }
