@@ -22,14 +22,16 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="TITLE" />
+            android:text="TITLE"
+            android:theme="@style/label_style" />
 
         <TextView
             android:id="@+id/movieTitleTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center" />
+            android:gravity="center"
+            android:theme="@style/movie_details_textview_style" />
 
     </LinearLayout>
 
@@ -37,7 +39,7 @@
         android:id="@+id/posterSypnosisLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="3"
+        android:layout_weight="5"
         android:orientation="horizontal">
 
         <ImageView
@@ -61,15 +63,27 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="5dp"
-                android:text="PLOT SYPNOSIS" />
+                android:text="PLOT SYPNOSIS"
+                android:theme="@style/label_style" />
 
-            <TextView
-                android:id="@+id/overviewTextView"
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="5"
-                android:padding="5dp"
-                android:text="TextView" />
+                android:layout_height="300dp"
+                >
+
+                <TextView
+                    android:id="@+id/overviewTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:padding="5dp"
+                    android:text="TextView"
+                    android:theme="@style/movie_details_textview_style" />
+
+
+            </ScrollView>
+
+
         </LinearLayout>
 
     </LinearLayout>
@@ -79,14 +93,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:theme="@style/label_style">
 
         <TextView
             android:id="@+id/releaseDateLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center_horizontal"
+            android:gravity="center"
             android:text="Release Date" />
 
         <TextView
@@ -94,7 +109,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center_horizontal"
+            android:gravity="center"
             android:text="User Rating " />
     </LinearLayout>
 
@@ -103,7 +118,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:theme="@style/movie_details_textview_style">
 
         <TextView
             android:id="@+id/releaseDateTextView"

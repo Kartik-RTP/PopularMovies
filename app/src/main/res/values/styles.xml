@@ -8,4 +8,17 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="label_style">
+        <item name="android:textSize">24dp</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:background">@color/colorPrimaryDark</item>
+
+
+    </style>
+
+    <style name="movie_details_textview_style">
+        <item name="android:textSize">18dp</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+
 </resources>
