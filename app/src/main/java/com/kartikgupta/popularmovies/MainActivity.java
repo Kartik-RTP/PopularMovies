@@ -231,7 +231,10 @@ public class MainActivity extends AppCompatActivity implements MoviesRecyclerVie
 
             Log.i(TAG,"rating sort setting selected");
             return true;
+        }else if(id==R.id.action_refresh){
+            getMovieData();
         }
+
         return super.onOptionsItemSelected(item);
     }
 
