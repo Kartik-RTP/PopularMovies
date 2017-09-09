@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ActionProvider;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import org.json.JSONArray;
@@ -37,18 +41,19 @@ public class MainActivity extends AppCompatActivity implements MoviesRecyclerVie
     private MoviesRecyclerViewAdapter mMoviesRecyclerViewAdapter;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getMovieData();
         mMovieGridRecyclerView = (RecyclerView) findViewById(R.id.movieGridRecyclerView);
-       // mMovieGridRecyclerView.setHasFixedSize(true);//TODO:check its effects
+        // mMovieGridRecyclerView.setHasFixedSize(true);//TODO:check its effects
 
         mLayoutManager = new GridLayoutManager(this, 2);
 
         mMovieGridRecyclerView.setLayoutManager(mLayoutManager);
-        mMoviesRecyclerViewAdapter = new MoviesRecyclerViewAdapter( mMovieListResultsJsonArray
+        mMoviesRecyclerViewAdapter = new MoviesRecyclerViewAdapter(mMovieListResultsJsonArray
                 //getMovieListJsonArray()
                 , this);
         mMoviesRecyclerViewAdapter.setClickListener(this);
@@ -58,19 +63,19 @@ public class MainActivity extends AppCompatActivity implements MoviesRecyclerVie
     }
 
     private void setupMoviesGridRecyclerView() {
-        if(mMovieListResultsJsonArray ==null) {
+        if (mMovieListResultsJsonArray == null) {
             //TODO:add error message
-            Log.e(TAG,"movie data json object is null");
-        }else {
+            Log.e(TAG, "movie data json object is null");
+        } else {
             mMovieGridRecyclerView = (RecyclerView) findViewById(R.id.movieGridRecyclerView);
             mMovieGridRecyclerView.setHasFixedSize(true);//TODO:check its effects
 
             mLayoutManager = new GridLayoutManager(this, 2);
 
             mMovieGridRecyclerView.setLayoutManager(mLayoutManager);
-            mMoviesRecyclerViewAdapter = new MoviesRecyclerViewAdapter( mMovieListResultsJsonArray
-                                                        //getMovieListJsonArray()
-                                                                                , this);
+            mMoviesRecyclerViewAdapter = new MoviesRecyclerViewAdapter(mMovieListResultsJsonArray
+                    //getMovieListJsonArray()
+                    , this);
             mMovieGridRecyclerView.setAdapter(mMoviesRecyclerViewAdapter);
         }
     }
@@ -87,13 +92,13 @@ public class MainActivity extends AppCompatActivity implements MoviesRecyclerVie
     }
 
     private void getMovieData() {
-            OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient();
 
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("api_key", API_KEY)
                 .addFormDataPart("language", "en-US")
-              //  .addFormDataPart("page", "1")
+                //  .addFormDataPart("page", "1")
                 .build();
 
 
@@ -101,8 +106,6 @@ public class MainActivity extends AppCompatActivity implements MoviesRecyclerVie
                 .url(BASE_URL + mSortOrder)
                 .post(requestBody)
                 .build();
-
-
 
 
         client.newCall(request).enqueue(new Callback() {
@@ -114,18 +117,18 @@ public class MainActivity extends AppCompatActivity implements MoviesRecyclerVie
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String responseString=response.body().string();
+                String responseString = response.body().string();
                 if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
 
                 Headers responseHeaders = response.headers();
                 for (int i = 0, size = responseHeaders.size(); i < size; i++) {
                     System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
                 }
-                Log.v(TAG,"response obtained is :-\n"+responseString);
-                JSONObject jsonObject=null;
+                Log.v(TAG, "response obtained is :-\n" + responseString);
+                JSONObject jsonObject = null;
                 try {
-                jsonObject = new JSONObject(responseString);
-                    Log.i(TAG,"Response converted to JsonObject without exception");
+                    jsonObject = new JSONObject(responseString);
+                    Log.i(TAG, "Response converted to JsonObject without exception");
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -149,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements MoviesRecyclerVie
 
     }
 
-    private void updateData()  {
+    private void updateData() {
         try {
             mMovieListResultsJsonArray = mMovieListJsonObject.getJSONArray("results");
         } catch (JSONException e) {
@@ -159,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements MoviesRecyclerVie
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.v(TAG,"updated movies data should reflect now");
+                Log.v(TAG, "updated movies data should reflect now");
                 mMoviesRecyclerViewAdapter.setMoviesData(mMovieListResultsJsonArray);
             }
         });
@@ -175,11 +178,50 @@ public class MainActivity extends AppCompatActivity implements MoviesRecyclerVie
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if(jsonObject!=null){
-            Intent intent = new Intent(this,MovieDetailsActivity.class);
-            intent.putExtra("movieJSONObject",jsonObject.toString());
+        if (jsonObject != null) {
+            Intent intent = new Intent(this, MovieDetailsActivity.class);
+            intent.putExtra("movieJSONObject", jsonObject.toString());
             startActivity(intent);
         }
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        // Inflate the menu; this adds menu to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu, menu);
+
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.menuSortPopular) {
+            if(!mSortOrder.equals("popular")){
+                mSortOrder="popular";
+                getMovieData();
+            }
+            Log.i(TAG,"popular sort setting selected");
+            return true;
+        }else if(id == R.id.menuSortRating){
+            if(!mSortOrder.equals("top_rated")){
+                mSortOrder="top_rated";
+                getMovieData();
+            }
+
+            Log.i(TAG,"rating sort setting selected");
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }
