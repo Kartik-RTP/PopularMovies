@@ -116,8 +116,8 @@ public class MainActivity extends AppCompatActivity implements MoviesRecyclerVie
                    @Override
                    public void run() {
                        Toast.makeText(getApplicationContext(),
-                       "there seems to be some problem with your internet connection"+
-                               "Please try again later by refreshing from the action bar menu",
+                       "there seems to be some problem with your internet connection \n"+
+                               "please try again later by refreshing from the action bar menu",
                                Toast.LENGTH_LONG).
                                show();
 
