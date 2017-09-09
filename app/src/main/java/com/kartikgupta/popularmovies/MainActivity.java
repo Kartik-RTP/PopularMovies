@@ -11,6 +11,7 @@ import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -111,7 +112,17 @@ public class MainActivity extends AppCompatActivity implements MoviesRecyclerVie
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+               runOnUiThread(new Runnable() {
+                   @Override
+                   public void run() {
+                       Toast.makeText(getApplicationContext(),
+                       "there seems to be some problem with your internet connection"+
+                               "Please try again later by refreshing from the action bar menu",
+                               Toast.LENGTH_LONG).
+                               show();
 
+                   }
+               });
                 e.printStackTrace();
             }
 
