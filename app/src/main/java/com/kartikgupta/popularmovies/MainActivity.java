@@ -47,29 +47,15 @@ public class MainActivity extends AppCompatActivity implements MoviesRecyclerVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        setupMoviesGridRecyclerView();
         getMovieData();
-        mMovieGridRecyclerView = (RecyclerView) findViewById(R.id.movieGridRecyclerView);
-        // mMovieGridRecyclerView.setHasFixedSize(true);//TODO:check its effects
-
-        mLayoutManager = new GridLayoutManager(this, 2);
-
-        mMovieGridRecyclerView.setLayoutManager(mLayoutManager);
-        mMoviesRecyclerViewAdapter = new MoviesRecyclerViewAdapter(mMovieListResultsJsonArray
-                //getMovieListJsonArray()
-                , this);
-        mMoviesRecyclerViewAdapter.setClickListener(this);
-        mMovieGridRecyclerView.setAdapter(mMoviesRecyclerViewAdapter);
-        //setupMoviesGridRecyclerView();
 
     }
 
     private void setupMoviesGridRecyclerView() {
-        if (mMovieListResultsJsonArray == null) {
-            //TODO:add error message
-            Log.e(TAG, "movie data json object is null");
-        } else {
             mMovieGridRecyclerView = (RecyclerView) findViewById(R.id.movieGridRecyclerView);
-            mMovieGridRecyclerView.setHasFixedSize(true);//TODO:check its effects
+          //  mMovieGridRecyclerView.setHasFixedSize(true);//TODO:check its effects
 
             mLayoutManager = new GridLayoutManager(this, 2);
 
@@ -77,8 +63,14 @@ public class MainActivity extends AppCompatActivity implements MoviesRecyclerVie
             mMoviesRecyclerViewAdapter = new MoviesRecyclerViewAdapter(mMovieListResultsJsonArray
                     //getMovieListJsonArray()
                     , this);
-            mMovieGridRecyclerView.setAdapter(mMoviesRecyclerViewAdapter);
-        }
+
+       /*     mMoviesRecyclerViewAdapter = new MoviesRecyclerViewAdapter(mMovieListResultsJsonArray
+                    //getMovieListJsonArray()
+                    , this);
+       */
+        mMoviesRecyclerViewAdapter.setClickListener(this);
+        mMovieGridRecyclerView.setAdapter(mMoviesRecyclerViewAdapter);
+
     }
 
     private JSONArray getMovieListJsonArray() {
@@ -164,19 +156,20 @@ public class MainActivity extends AppCompatActivity implements MoviesRecyclerVie
     }
 
     private void updateData() {
-        try {
-            mMovieListResultsJsonArray = mMovieListJsonObject.getJSONArray("results");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Log.v(TAG, "updated movies data should reflect now");
-                mMoviesRecyclerViewAdapter.setMoviesData(mMovieListResultsJsonArray);
+            try {
+                mMovieListResultsJsonArray = mMovieListJsonObject.getJSONArray("results");
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        });
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.v(TAG, "updated movies data should reflect now");
+                    mMoviesRecyclerViewAdapter.setMoviesData(mMovieListResultsJsonArray);
+                }
+            });
 
     }
 
